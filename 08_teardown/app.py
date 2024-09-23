@@ -7,12 +7,12 @@ Importing Python libs through pip
 activating virtual machine through using virtual machine /bin/activate
 
 QCC:
-0. 
-1. 
-2. 
-3. 
-4. 
-5. 
+0. Initializing a file in Java, or an object like 'Card uno = Card(name)'
+1. The point of reference for '/' in terminal is your main directory
+2. In the terminal
+3. I think it will print the name of the directory the app is routed to
+4. It appears in a httml link, we know because when we run it gives us a link.
+5. Running a function defined in an object like a static or non static function.
  ...
 
 INVESTIGATIVE APPROACH:
@@ -32,6 +32,3 @@ def hello_world():
     return "No hablo queso!"             # Q4: Will this appear anywhere? How u know?
 
 app.run()                                # Q5: Where have you seen similar constructs in other languages?
-
-
-
