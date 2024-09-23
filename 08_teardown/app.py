@@ -19,6 +19,9 @@ INVESTIGATIVE APPROACH:
 <Your concise summary of how
  you and your team set about
  "illuminating the cave of ignorance" here...>
+ We recognized initializing and calling functions of objects from APCS
+ and then ran the code to see that there was a "running on __link__" that sent us to a
+ webpage that said 'No hablo queso!'
 '''
 
 
