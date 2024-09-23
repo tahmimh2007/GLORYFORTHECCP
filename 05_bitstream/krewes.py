@@ -1,8 +1,8 @@
 #Tahmim Hassan
 #UWSD
 # SoftDev
-# K04 -- Python dictionaries and random seleciton
-# 2024-9-13
+# K05 -- bitstream
+# 2024-9-18
 #time spent: .8
 
 import random
