@@ -14,8 +14,7 @@ app = Flask(__name__)
 def hello_world():
     print(__name__)
     return '''
-    # Tahmim Hassan<br>
-    # Fire Marshalls<br>
+    # Fire Marshalls-Tahmim Hassan, Ivan Gontchar, Jason Chao<br>
     # SoftDev<br>
     # K09 -- Putting it Together<br>
     # 2024-09-24<br>
