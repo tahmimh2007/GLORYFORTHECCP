@@ -1,4 +1,4 @@
-# Stanley Hoo
+# Tahmim Hassan, Stanley Hoo, Leon Huang
 # UWSD
 # SoftDev
 # K1 -- Some things Never Change
