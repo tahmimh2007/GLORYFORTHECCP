@@ -1,11 +1,14 @@
 # Stanley Hoo, Tahmim Hassan, Leon Huang
 # UWSD
 # SoftDev
-# K11 -- Some things Never Change
+# K12 -- Just plug it in
 # 2024-09-26
 # time spent: 0.5
 
 """
+NOTES:
+in the my foist template webpage it shows the array in numbers and new lines
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Q0:
 <your response here>
@@ -30,6 +33,7 @@ foo, collection --> data we pass to the html web page through this python script
 # (log prediction before executing...)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 from flask import Flask, render_template
+import os
 app = Flask(__name__)
 
 @app.route("/")
@@ -48,6 +52,14 @@ def test_tmplt():
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     return render_template( 'model_tmplt.html', foo="fooooo", collection=coll)
 
+
+img = os.path.join('static', 'Image')
+ 
+@app.route("/ILOVEMYKOLYK")
+def home():
+    file = os.path.join(img, 'startrek.jpg')
+    return render_template('mykolyk.html', image=file)
+ 
 
 if __name__ == "__main__":
     app.debug = True
