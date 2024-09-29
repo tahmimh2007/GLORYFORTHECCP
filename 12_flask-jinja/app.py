@@ -54,7 +54,7 @@ def test_tmplt():
 
 
 img = os.path.join('static', 'Image')
- 
+ #run this code with url: http://127.0.0.1:5000/ILOVEMYKOLYK for results!
 @app.route("/ILOVEMYKOLYK")
 def home():
     file = os.path.join(img, 'startrek.jpg')
