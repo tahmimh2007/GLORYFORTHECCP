@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<!-- 
+  Jady Lei
+  Team: 45
+  SoftDev Pd 4
+  Sep 30 2024 
+ -->
+
+<html>
+
+  <head>
+    <title> 45:Occupations </title>
+  </head>
+
+  <body>
+    <h1> Jady Lei: Team 45: SoftDev Pd 4</h1>
+    <h2> random: {{ foo }} </h2>
+    <table>
+    <tr> <th> Jobs </th> <th> Percents </th> </tr>
+    {% for job in coll %}
+        <tr>
+             <td>{{ job['Job Class'] }}</td>
+             <td>{{ job['Percentage'] }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+  </body>
+
+</html>
+
