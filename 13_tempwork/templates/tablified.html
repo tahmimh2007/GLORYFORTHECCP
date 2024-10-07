@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <!-- 
-  Jady Lei
+  Tahmim Hassan
+  Jady Lei, Brian Liu
   Team: 45
   SoftDev Pd 4
   Sep 30 2024 
@@ -10,20 +11,31 @@
 
   <head>
     <title> 45:Occupations </title>
+    <style>
+    table, th, td {
+      border: 1px solid black;
+    }
+    </style>
   </head>
 
   <body>
     <h1> Jady Lei: Team 45: SoftDev Pd 4</h1>
     <h2> random: {{ foo }} </h2>
     <table>
-    <tr> <th> Jobs </th> <th> Percents </th> </tr>
+    <tr> <th> Jobs </th> <th> Percents </th> <th>Link</th> </tr>
     {% for job in coll %}
         <tr>
              <td>{{ job['Job Class'] }}</td>
              <td>{{ job['Percentage'] }}</td>
+             <td>{{ job['Link'] }}</td>
         </tr>
     {% endfor %}
     </table>
+    <br>
+    {% set myList = ['', '?theme=clean', '?theme=dark', '?theme=hotdog'] %}
+    {% set rand = range(0, 4) | random %}
+    {% set link = 'https://www.gravatar.com/avatar/362c4544f6e3268b2401b40f37ea21e1?s=256&d=identicon&r=PG&f=y&so-version=2' %}
+    <a href="https://stackoverflow.com/users/27422447/tahmim-hassan?tab=profile"><img src={{ link + myList[rand] }} width="208" height="58" alt="profile for Jady Lei at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Tahmim Hassan at Stack Overflow, Q&amp;A for professional and enthusiast programmers"></a>
   </body>
 
 </html>
