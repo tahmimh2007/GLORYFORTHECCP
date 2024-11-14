@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
+  <!-- <script>
     tailwind.config = {
       theme: {
         extend: {
@@ -15,12 +15,31 @@
       }
     }
   </script>
+  <style type="text/tailwindcss">
+  @layer utilities {
+    .content-auto {
+      content-visibility: auto;
+    }
+  }
+</style> -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
 </head>
 <body>
-  <h1 class="text-3xl font-bold underline text-barny">
+  <!-- <div class="lg:content-auto">
     What is Tailwind CSS!?!?!
-  </h1>
-  <p> Tailwing CSS is a front-end framework. With Tailwind, you style elements
-  by applying pre-existing classes directly in your HTML.</p>
+  </div> -->
+  <!-- <h1 class="text-3xl font-bold underline text-barny">
+    What is Tailwind CSS!?!?!
+  </h1> -->
+<div class="prose">
+  <p> Tailwind CSS is a front-end framework. With Tailwind, you can use
+    predfined classes to style your websites. Rather than making a separate
+    css document that details a bunch of classes, you can use classes already
+    made by Tailwind. If you need something more specialized, you can make
+    your own script with custom css that takes advantage of Tailwind's shortened
+    syntax.
+  </p>
+</div>
+
 </body>
 </html>
