@@ -1,45 +1,80 @@
 <!doctype html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            barny: '#da373d',
-          }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tailwind CSS Features</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            plugins: [require('@tailwindcss/typography')]
         }
-      }
-    }
-  </script>
-  <style type="text/tailwindcss">
-  @layer utilities {
-    .content-auto {
-      content-visibility: auto;
-    }
-  }
-</style> -->
-<script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+    </script>
 </head>
-<body>
-  <!-- <div class="lg:content-auto">
-    What is Tailwind CSS!?!?!
-  </div> -->
-  <!-- <h1 class="text-3xl font-bold underline text-barny">
-    What is Tailwind CSS!?!?!
-  </h1> -->
-<div class="prose">
-  <p> Tailwind CSS is a front-end framework. With Tailwind, you can use
-    predfined classes to style your websites. Rather than making a separate
-    css document that details a bunch of classes, you can use classes already
-    made by Tailwind. If you need something more specialized, you can make
-    your own script with custom css that takes advantage of Tailwind's shortened
-    syntax.
-  </p>
-</div>
+<body class="bg-gray-100 font-sans leading-relaxed">
+    <header class="bg-blue-500 text-white text-center py-6">
+        <h1 class="text-3xl font-bold">Tailwind CSS Features</h1>
+        <p class="text-lg">A utility-first CSS framework that makes stuff go faster</p>
+    </header>
+    <main class="max-w-4xl mx-auto my-8 p-4">
+            <section class="mb-6">
+                <p class="text-gray-700 my-2"> Tailwind CSS is a front-end framework. With Tailwind, you can use
+                    predfined classes to style your websites. Rather than making a separate
+                    css document that details a bunch of classes, you can use classes already
+                    made by Tailwind. If you need something more specialized, you can make
+                    your own script with custom css that takes advantage of Tailwind's shortened
+                    syntax. You can visit geeksforgeeks or the actual Tailwind CSS website for a more
+                    detailed breakdown.
+                </p>
+            </section>
+            <section class="mb-6">
+                <h2 class="text-2xl font-semibold text-gray-800">1. Utility-First</h2>
+                <p class="text-gray-700 my-2">
+                    Tailwind CSS provides low-level utility classes to help you build custom designs without writing custom CSS.
+                </p>
+                <div class="bg-gray-200 p-4 rounded">
+                    <div class="text-center text-blue-500 font-bold text-lg">This is styled using utility classes only</div>
+                </div>
+            </section>
+            <section class="mb-6">
+                <h2 class="text-2xl font-semibold text-gray-800">2. Responsive Design</h2>
+                <p class="text-gray-700 my-2">
+                    Tailwind includes utilities for building responsive layouts. For example, try changing the size of your browser
+                    and see how the boxes shift around. Kinda snazzy.
+                </p>
+                <div class="flex flex-col md:flex-row items-center bg-gray-200 p-4 rounded">
+                    <div class="p-4 text-center bg-blue-100 m-2 rounded">Block 1</div>
+                    <div class="p-4 text-center bg-blue-200 m-2 rounded">Block 2</div>
+                    <div class="p-4 text-center bg-blue-300 m-2 rounded">Block 3</div>
+                </div>
+            </section>
+            <section class="mb-6">
+                <h2 class="text-2xl font-semibold text-gray-800">3. Customization</h2>
+                <p class="text-gray-700 my-2">
+                    Tailwind can be customized using a configuration file to suit your design needs.
+                </p>
+                <button class="px-6 py-2 bg-green-500 text-white font-bold rounded hover:bg-green-600 transition duration-300">
+                    Customized Button
+                </button>
+                <p class="text-gray-700 my-2">
+                    It doesn't link to anything though.
+                </p>
+            </section>
+            <section class="mb-6">
+                <h2 class="text-2xl font-semibold text-gray-800">4. Plugins</h2>
+                <p class="text-gray-700 my-2">
+                    Plugins from Tailwind are like extra features that you can source if what's originally there doesn't satisfy you.
+                    These include forms, typography, and aspect ratio. They're community made.
+                </p>
+                <div class="bg-purple-100 text-purple-800 p-4 rounded">
+                    Example using a plugin: Tailwind Typography (requires plugin setup).
+                </div>
+            </section>
 
+    </main>
+
+    <footer class="bg-gray-800 text-gray-200 text-left py-4">
+        <p>@scandinavianTortoises</p>
+    </footer>
 </body>
 </html>
