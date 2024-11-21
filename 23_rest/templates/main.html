@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>K23: NASA API Explorer</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        img { max-width: 100%; height: auto; }
+    </style>
+</head>
+<body>
+    <h1>{{ team_name }}</h1>
+    
+    <h2>Team Roster</h2>
+    <ul>
+        <li>{{ member2 }}</li>
+        <li>{{ member1 }}</li>
+    </ul>
+    
+    <h2>NASA APOD</h2>
+    <h3>{{ image_title }}</h3>
+    
+    <img src="{{ image_url }}" alt="{{ image_title }}">
+    
+    <h3>Explanation</h3>
+    <p>{{ image_explanation }}</p>
+</body>
+</html>
