@@ -102,24 +102,33 @@ var stripe = function()
 
 //insert your implementations here for...
 // FIB
-let fib = function (n){
+var fib = function (n){
   if (n==0 || n==1){
     return n;
   }
   else return fib(n-1)+fib(n-2);
 }
+console.log(fib(10))
 // FAC
-let fact = function (n){
+var fact = function (n){
   if ( n==1) {
     return n;
   }
   else return n*fact(n-1);
 }
+console.log(fact(3))
 // GCD
-let gac = function(n, e){
-  let max = function(n, e)
+var gac = function(a, b) {
+    if (b == 0) {
+        return a;
+    }
+    return gac(b, (a % b));
 }
 
+console.log(gac(3, 6))
+console.log(gac(15, 25))
+console.log(gac(27, 81))
+console.log(gac(12, 21))
 // In addition to the style shown above,
 //  you are encouraged to test drive the "arrow function syntax" as shown below.
 //  Note anything notable.
