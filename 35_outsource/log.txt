@@ -1,0 +1,24 @@
+RetiredSubmariners: Sasha Murokh, Tahmim Hassan
+softdev
+K35: Now Again for the First Time
+2025-03-12
+Time spent: 3
+DISCO:
+overall, this chatbot is kind of stupid and doesnt remember previous conversations
+from my experience with using chatgpt for python outside of school (never tried it with flask but ill assume the best), chatgpt seems to be better than copilot at similar texts and avoids many errors
+
+
+Q/C/C:
+Concern: it sources from other people's repos.
+Concern: it doesnt remember previous conversations
+
+some areas of interest...
+q0: How many tries did it take to "get it right?"
+10
+
+q1: Did you catch any errors? If so, how did you notice, and what did you do?
+it outputted
+def login():
+    if request.method == 'POST']:
+as valid code despite the unnecessary closing bracket.
+this led to an error that we asked it to resolve, and the chatbot fixed it after we pointed it out
