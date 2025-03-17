@@ -1,12 +1,23 @@
 DISCO:
+overall, this chatbot is kind of stupid and doesnt remember previous conversations
+from my experience with using chatgpt for python outside of school (never tried it with flask but ill assume the best), chatgpt seems to be better than copilot at similar texts and avoids many errors
+
 
 Q/C/C:
-it sources from other people's repos.
+Concern: it sources from other people's repos.
+Concern: it doesnt remember previous conversations
 
 some areas of interest...
 q0: How many tries did it take to "get it right?"
+10
+
 q1: Did you catch any errors? If so, how did you notice, and what did you do?
-q2:
+it outputted
+def login():
+    if request.method == 'POST']:
+as valid code despite the unnecessary closing bracket.
+this led to an error that we asked it to resolve, and the chatbot fixed it after we pointed it out
+
 
 
 Copilot Chat
@@ -96,7 +107,7 @@ def login():
         password = request.form['password']
         user = User.query.filter_by(email=email).first()
         if user and check_password_hash(user.password, password):
-            session['user_id'] = user.id
+            session['user_id'] = user.id1) + "  | ",  format_airpl
             return redirect(url_for('dashboard'))
     return render_template('login.html')
 
@@ -934,3 +945,682 @@ Flask-SQLAlchemy==2.4.4
 Werkzeug==2.0.1
 
 If you require changes to HTML files or further assistance, please let me know.
+
+
+
+
+
+Copilot Chat
+do you remember our previous conversation?
+
+I don't have the ability to remember previous interactions. However, I'm here to help you with your current question or task. How can I assist you with the sasha-school/sasha-softdev repository?
+chatlog.txt
+login.html
+__init__.py
+requirements.txt
+new_blog.html
+register.html
+new_entry.html
+35_mxrobbotto
+app
+rewrite __init__.py to NOT use sqlalchemy and just use sqlite3 using a cursor for example
+1 reference
+
+Here is the rewritten __init__.py file to use sqlite3 instead of SQLAlchemy:
+Python
+
+from flask import Flask, render_template, redirect, url_for, request, session
+from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
+import sqlite3
+import os
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your_secret_key'
+DATABASE = 'site.db'
+
+def get_db_connection():
+    conn = sqlite3.connect(DATABASE)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def init_db():
+    with app.app_context():
+        db = get_db_connection()
+        with app.open_resource('schema.sql') as f:
+            db.executescript(f.read().decode('utf8'))
+        db.commit()
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = generate_password_hash(request.form['password'], method='sha256')
+        conn = get_db_connection()
+        conn.execute('INSERT INTO user (username, email, password) VALUES (?, ?, ?)',
+                     (username, email, password))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('login'))
+    return render_template('register.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        conn = get_db_connection()
+        user = conn.execute('SELECT * FROM user WHERE email = ?', (email,)).fetchone()
+        conn.close()
+        if user and check_password_hash(user['password'], password):
+            session['user_id'] = user['id']
+            return redirect(url_for('dashboard'))
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    return redirect(url_for('login'))
+
+@app.route('/dashboard')
+def dashboard():
+    if 'user_id' in session:
+        return 'Logged in as user_id {}'.format(session['user_id'])
+    return redirect(url_for('login'))
+
+@app.route('/blog/new', methods=['GET', 'POST'])
+def new_blog():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        title = request.form['title']
+        conn = get_db_connection()
+        conn.execute('INSERT INTO blog (user_id, title) VALUES (?, ?)',
+                     (session['user_id'], title))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('dashboard'))
+    return render_template('new_blog.html')
+
+@app.route('/blog/<int:blog_id>/entry/new', methods=['GET', 'POST'])
+def new_entry(blog_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        title = request.form['title']
+        content = request.form['content']
+        conn = get_db_connection()
+        conn.execute('INSERT INTO entry (blog_id, title, content, timestamp) VALUES (?, ?, ?, ?)',
+                     (blog_id, title, content, datetime.utcnow()))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('view_blog', blog_id=blog_id))
+    return render_template('new_entry.html')
+
+@app.route('/blog/<int:blog_id>')
+def view_blog(blog_id):
+    conn = get_db_connection()
+    blog = conn.execute('SELECT * FROM blog WHERE id = ?', (blog_id,)).fetchone()
+    entries = conn.execute('SELECT * FROM entry WHERE blog_id = ?', (blog_id,)).fetchall()
+    conn.close()
+    return render_template('view_blog.html', blog=blog, entries=entries)
+
+@app.route('/blog/<int:blog_id>/entry/<int:entry_id>/edit', methods=['GET', 'POST'])
+def edit_entry(blog_id, entry_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    conn = get_db_connection()
+    entry = conn.execute('SELECT * FROM entry WHERE id = ?', (entry_id,)).fetchone()
+    if request.method == 'POST':
+        title = request.form['title']
+        content = request.form['content']
+        conn.execute('UPDATE entry SET title = ?, content = ? WHERE id = ?',
+                     (title, content, entry_id))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('view_blog', blog_id=blog_id))
+    conn.close()
+    return render_template('edit_entry.html', entry=entry)
+
+@app.route('/blogs')
+def view_blogs():
+    conn = get_db_connection()
+    blogs = conn.execute('SELECT * FROM blog').fetchall()
+    conn.close()
+    return render_template('view_blogs.html', blogs=blogs)
+
+if __name__ == '__main__':
+    if not os.path.exists(DATABASE):
+        init_db()
+    app.run(debug=True)
+
+Public code references from 7 repositories
+
+1 vulnerability detected
+
+You will also need to create a schema.sql file to define the tables:
+SQL
+
+-- schema.sql
+CREATE TABLE user (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    email TEXT NOT NULL,
+    password TEXT NOT NULL,
+    UNIQUE(email)
+);
+
+CREATE TABLE blog (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    FOREIGN KEY(user_id) REFERENCES user(id)
+);
+
+CREATE TABLE entry (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    blog_id INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    timestamp DATETIME NOT NULL,
+    FOREIGN KEY(blog_id) REFERENCES blog(id)
+);
+
+Public code references from 2 repositories
+
+what should the file structure look like
+
+Based on the provided __init__.py file and the requirement to use sqlite3, the file structure should look like this:
+plaintext
+
+35_mxrobbotto/
+    app/
+        __init__.py
+        templates/
+            register.html
+            login.html
+            new_blog.html
+            new_entry.html
+            view_blog.html
+            edit_entry.html
+            view_blogs.html
+        schema.sql
+    requirements.txt
+
+Here is a summary of the files:
+
+    __init__.py: The main Python file containing the Flask application.
+    templates/: Directory containing HTML templates for rendering web pages.
+    schema.sql: SQL file to define the required database schema.
+    requirements.txt: File containing the list of dependencies for the project.
+
+make the dashboard actually display blogs and provide user with the ability to make blogs and entries
+1 reference
+
+The __init__.py file content has been retrieved. However, the dashboard.html, new_blog.html, and new_entry.html templates could not be found.
+
+Let's proceed with updating the __init__.py file to include the ability to display blogs on the dashboard and provide the user with the ability to create blogs and entries. We will also create the necessary HTML templates.
+Updated __init__.py:
+Python
+
+from flask import Flask, render_template, redirect, url_for, request, session
+from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
+import sqlite3
+import os
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your_secret_key'
+DATABASE = 'site.db'
+
+def get_db_connection():
+    conn = sqlite3.connect(DATABASE)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def init_db():
+    with app.app_context():
+        db = get_db_connection()
+        with app.open_resource('schema.sql') as f:
+            db.executescript(f.read().decode('utf8'))
+        db.commit()
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = generate_password_hash(request.form['password'], method='sha256')
+        conn = get_db_connection()
+        conn.execute('INSERT INTO user (username, email, password) VALUES (?, ?, ?)',
+                     (username, email, password))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('login'))
+    return render_template('register.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        conn = get_db_connection()
+        user = conn.execute('SELECT * FROM user WHERE email = ?', (email,)).fetchone()
+        conn.close()
+        if user and check_password_hash(user['password'], password):
+            session['user_id'] = user['id']
+            return redirect(url_for('dashboard'))
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    return redirect(url_for('login'))
+
+@app.route('/dashboard')
+def dashboard():
+    if 'user_id' in session:
+        conn = get_db_connection()
+        blogs = conn.execute('SELECT * FROM blog WHERE user_id = ?', (session['user_id'],)).fetchall()
+        conn.close()
+        return render_template('dashboard.html', blogs=blogs)
+    return redirect(url_for('login'))
+
+@app.route('/blog/new', methods=['GET', 'POST'])
+def new_blog():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        title = request.form['title']
+        conn = get_db_connection()
+        conn.execute('INSERT INTO blog (user_id, title) VALUES (?, ?)',
+                     (session['user_id'], title))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('dashboard'))
+    return render_template('new_blog.html')
+
+@app.route('/blog/<int:blog_id>/entry/new', methods=['GET', 'POST'])
+def new_entry(blog_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        title = request.form['title']
+        content = request.form['content']
+        conn = get_db_connection()
+        conn.execute('INSERT INTO entry (blog_id, title, content, timestamp) VALUES (?, ?, ?, ?)',
+                     (blog_id, title, content, datetime.utcnow()))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('view_blog', blog_id=blog_id))
+    return render_template('new_entry.html')
+
+@app.route('/blog/<int:blog_id>')
+def view_blog(blog_id):
+    conn = get_db_connection()
+    blog = conn.execute('SELECT * FROM blog WHERE id = ?', (blog_id,)).fetchone()
+    entries = conn.execute('SELECT * FROM entry WHERE blog_id = ?', (blog_id,)).fetchall()
+    conn.close()
+    return render_template('view_blog.html', blog=blog, entries=entries)
+
+@app.route('/blog/<int:blog_id>/entry/<int:entry_id>/edit', methods=['GET', 'POST'])
+def edit_entry(blog_id, entry_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    conn = get_db_connection()
+    entry = conn.execute('SELECT * FROM entry WHERE id = ?', (entry_id,)).fetchone()
+    if request.method == 'POST':
+        title = request.form['title']
+        content = request.form['content']
+        conn.execute('UPDATE entry SET title = ?, content = ? WHERE id = ?',
+                     (title, content, entry_id))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('view_blog', blog_id=blog_id))
+    conn.close()
+    return render_template('edit_entry.html', entry=entry)
+
+@app.route('/blogs')
+def view_blogs():
+    conn = get_db_connection()
+    blogs = conn.execute('SELECT * FROM blog').fetchall()
+    conn.close()
+    return render_template('view_blogs.html', blogs=blogs)
+
+if __name__ == '__main__':
+    if not os.path.exists(DATABASE):
+        init_db()
+    app.run(debug=True)
+
+Public code references from 9 repositories
+
+1 vulnerability detected
+
+Templates:
+dashboard.html:
+HTML
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <a href="{{ url_for('new_blog') }}">Create New Blog</a>
+    <h2>Your Blogs</h2>
+    <ul>
+    {% for blog in blogs %}
+        <li>
+            <a href="{{ url_for('view_blog', blog_id=blog['id']) }}">{{ blog['title'] }}</a>
+        </li>
+    {% endfor %}
+    </ul>
+</body>
+</html>
+
+Public code references from 4 repositories
+
+new_blog.html:
+HTML
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create New Blog</title>
+</head>
+<body>
+    <h1>Create New Blog</h1>
+    <form method="post">
+        <label for="title">Blog Title:</label>
+        <input type="text" id="title" name="title" required><br>
+        <button type="submit">Create Blog</button>
+    </form>
+</body>
+</html>
+
+Public code references from 4 repositories
+
+new_entry.html:
+HTML
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create New Entry</title>
+</head>
+<body>
+    <h1>Create New Entry</h1>
+    <form method="post">
+        <label for="title">Entry Title:</label>
+        <input type="text" id="title" name="title" required><br>
+        <label for="content">Content:</label>
+        <textarea id="content" name="content" required></textarea><br>
+        <button type="submit">Create Entry</button>
+    </form>
+</body>
+</html>
+
+Public code references from 4 repositories
+
+view_blog.html:
+HTML
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ blog['title'] }}</title>
+</head>
+<body>
+    <h1>{{ blog['title'] }}</h1>
+    <a href="{{ url_for('new_entry', blog_id=blog['id']) }}">Add New Entry</a>
+    <h2>Entries</h2>
+    <ul>
+    {% for entry in entries %}
+        <li>
+            <h3>{{ entry['title'] }}</h3>
+            <p>{{ entry['content'] }}</p>
+            <a href="{{ url_for('edit_entry', blog_id=blog['id'], entry_id=entry['id']) }}">Edit</a>
+        </li>
+    {% endfor %}
+    </ul>
+</body>
+</html>
+
+Public code references from 4 repositories
+
+edit_entry.html:
+HTML
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Entry</title>
+</head>
+<body>
+    <h1>Edit Entry</h1>
+    <form method="post">
+        <label for="title">Entry Title:</label>
+        <input type="text" id="title" name="title" value="{{ entry['title'] }}" required><br>
+        <label for="content">Content:</label>
+        <textarea id="content" name="content" required>{{ entry['content'] }}</textarea><br>
+        <button type="submit">Update Entry</button>
+    </form>
+</body>
+</html>
+
+Public code references from 4 repositories
+
+view_blogs.html:
+HTML
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Blogs</title>
+</head>
+<body>
+    <h1>All Blogs</h1>
+    <ul>
+    {% for blog in blogs %}
+        <li>
+            <a href="{{ url_for('view_blog', blog_id=blog['id']) }}">{{ blog['title'] }}</a>
+        </li>
+    {% endfor %}
+    </ul>
+</body>
+</html>
+
+Public code references from 4 repositories
+
+schema.sql:
+SQL
+
+-- schema.sql
+CREATE TABLE user (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    email TEXT NOT NULL,
+    password TEXT NOT NULL,
+    UNIQUE(email)
+);
+
+CREATE TABLE blog (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    FOREIGN KEY(user_id) REFERENCES user(id)
+);
+
+CREATE TABLE entry (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    blog_id INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    timestamp DATETIME NOT NULL,
+    FOREIGN KEY(blog_id) REFERENCES blog(id)
+);
+
+Public code references from 2 repositories
+
+This should provide the functionality to display blogs on the dashboard and allow users to create blogs and entries.
+write the code for the root route in __init__.py to have a link to register and to login
+1 reference
+
+To add a root route ("/") with links to register and login, you can update the __init__.py file as follows:
+Updated __init__.py:
+Python
+
+from flask import Flask, render_template, redirect, url_for, request, session
+from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
+import sqlite3
+import os
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your_secret_key'
+DATABASE = 'site.db'
+
+def get_db_connection():
+    conn = sqlite3.connect(DATABASE)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def init_db():
+    with app.app_context():
+        db = get_db_connection()
+        with app.open_resource('schema.sql') as f:
+            db.executescript(f.read().decode('utf8'))
+        db.commit()
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = generate_password_hash(request.form['password'], method='sha256')
+        conn = get_db_connection()
+        conn.execute('INSERT INTO user (username, email, password) VALUES (?, ?, ?)',
+                     (username, email, password))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('login'))
+    return render_template('register.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        conn = get_db_connection()
+        user = conn.execute('SELECT * FROM user WHERE email = ?', (email,)).fetchone()
+        conn.close()
+        if user and check_password_hash(user['password'], password):
+            session['user_id'] = user['id']
+            return redirect(url_for('dashboard'))
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    return redirect(url_for('login'))
+
+@app.route('/dashboard')
+def dashboard():
+    if 'user_id' in session:
+        conn = get_db_connection()
+        blogs = conn.execute('SELECT * FROM blog WHERE user_id = ?', (session['user_id'],)).fetchall()
+        conn.close()
+        return render_template('dashboard.html', blogs=blogs)
+    return redirect(url_for('login'))
+
+@app.route('/blog/new', methods=['GET', 'POST'])
+def new_blog():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        title = request.form['title']
+        conn = get_db_connection()
+        conn.execute('INSERT INTO blog (user_id, title) VALUES (?, ?)',
+                     (session['user_id'], title))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('dashboard'))
+    return render_template('new_blog.html')
+
+@app.route('/blog/<int:blog_id>/entry/new', methods=['GET', 'POST'])
+def new_entry(blog_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        title = request.form['title']
+        content = request.form['content']
+        conn = get_db_connection()
+        conn.execute('INSERT INTO entry (blog_id, title, content, timestamp) VALUES (?, ?, ?, ?)',
+                     (blog_id, title, content, datetime.utcnow()))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('view_blog', blog_id=blog_id))
+    return render_template('new_entry.html')
+
+@app.route('/blog/<int:blog_id>')
+def view_blog(blog_id):
+    conn = get_db_connection()
+    blog = conn.execute('SELECT * FROM blog WHERE id = ?', (blog_id,)).fetchone()
+    entries = conn.execute('SELECT * FROM entry WHERE blog_id = ?', (blog_id,)).fetchall()
+    conn.close()
+    return render_template('view_blog.html', blog=blog, entries=entries)
+
+@app.route('/blog/<int:blog_id>/entry/<int:entry_id>/edit', methods=['GET', 'POST'])
+def edit_entry(blog_id, entry_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    conn = get_db_connection()
+    entry = conn.execute('SELECT * FROM entry WHERE id = ?', (entry_id,)).fetchone()
+    if request.method == 'POST':
+        title = request.form['title']
+        content = request.form['content']
+        conn.execute('UPDATE entry SET title = ?, content = ? WHERE id = ?',
+                     (title, content, entry_id))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('view_blog', blog_id=blog_id))
+    conn.close()
+    return render_template('edit_entry.html', entry=entry)
+
+@app.route('/blogs')
+def view_blogs():
+    conn = get_db_connection()
+    blogs = conn.execute('SELECT * FROM blog').fetchall()
+    conn.close()
+    return render_template('view_blogs.html', blogs=blogs)
+
+if __name__ == '__main__':
+    if not os.path.exists(DATABASE):
+        init_db()
+    app.run(debug=True)
+
+Public code references from 10 repositories
+
+1 vulnerability detected
+
+New Template:
+index.html:
+HTML
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+</head>
+<body>
+    <h1>Welcome</h1>
+    <a href="{{ url_for('register') }}">Register</a><br>
+    <a href="{{ url_for('login') }}">Login</a>
+</body>
+</html>
